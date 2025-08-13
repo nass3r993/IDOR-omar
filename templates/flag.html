@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Claim Your Prize</title>
+    <link rel="stylesheet" href="/static/style.css">
+ <style>
+    #cert {
+        display: none;
+        width: 100%;
+        max-width: 1000px;
+        height: auto;
+        margin-top: 2rem;
+        border-radius: 40px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2> Claim Your prize ;) 🏁</h2>
+        <form id="flagForm">
+            <input type="text" id="flagInput" placeholder="Enter the flag here" required>
+            <button type="submit">Validate</button>
+        </form>
+        <p id="responseMsg" class="msg"></p>
+        <img id="cert" src="">
+        <a href="/send">← Back</a>
+    </div>
+
+    <script>
+        const form = document.getElementById('flagForm');
+        const flagInput = document.getElementById('flagInput');
+        const responseMsg = document.getElementById('responseMsg');
+        const cert = document.getElementById('cert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const flag = flagInput.value.trim();
+
+            const res = await fetch('/flag-validation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ flag })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                responseMsg.innerText = '✅ Flag accepted!';
+                cert.src = data.cert_url;
+                cert.style.display = 'block';
+            } else {
+                responseMsg.innerText = '❌ Invalid flag.';
+                cert.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

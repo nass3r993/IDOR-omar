@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        #messages {
+            background-color: #334155;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1.5rem;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #messages ul {
+            padding-left: 20px;
+        }
+        .logout-btn {
+            margin-top: 2rem;
+            background: #ef4444;
+        }
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>📬 Welcome, {{ username }}!</h2>
+
+        <button onclick="loadMessages()">📨 View My Messages</button>
+        <div id="messages">No messages loaded yet.</div>
+
+        <hr style="margin: 2rem 0; border-color: #475569;">
+        <h3>Send Email</h3>
+        <p>This feature is <strong>under development</strong> 🚧</p>
+
+        <a href="/logout">
+            <button class="logout-btn">Logout</button>
+        </a>
+    </div>
+
+    <script>
+        function loadMessages() {
+            fetch(`/api/users/messages?id={{ user_id }}`)
+                .then(res => res.json())
+                .then(data => {
+                    const msgBox = document.getElementById('messages');
+                    if (data.messages && data.messages.length > 0) {
+                        msgBox.innerHTML = '<ul>' + data.messages.map(m => `<li>${m}</li>`).join('') + '</ul>';
+                    } else {
+                        msgBox.innerText = data.error || 'No messages available.';
+                    }
+                });
+        }
+    </script>
+</body>
+</html>
